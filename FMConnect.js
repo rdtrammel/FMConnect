@@ -10,7 +10,7 @@ const FMConnect = function (obj){
         host : obj.host,
         file : obj.file,
         auth : btoa(`${obj.user}:${obj.pass}`)
-    },
+    }
 
     function open(){
         let url = `https://${options.host}/fmi/data/vLatest/databases/${options.file}/sessions`;
@@ -23,10 +23,9 @@ const FMConnect = function (obj){
             body:{}
         };
         fetch(url, headers).then( result =>{ 
+            if ( !result.OK ) return;
             options.token = result.json().response.token;
-            console.log(options.token);
-            console.log(result.json());
-        });
+        }); //Fetch not working yet
     }
 
     function close(){
@@ -38,12 +37,20 @@ const FMConnect = function (obj){
                 "Content-Type":"application/json"
             }
         }
-        fetch(url, headers).then(result=>console.log(result));
+        fetch(url, headers).then(result=>console.log(result)); //Not working
     }
 
-    function findRecord(){
-        for (var i = 0 ; !options.token && i < 3 ; i++){ open();}
+    function find(layout,criteria){
+        for (var i = 0 ; !options.token && i < 3 ; i++){ open();} //Try 3 times
         if (!options.token) return;
+    }
+    
+    function runScript(scriptName){
+        //This will require a generic "Globals" layout exists somewhere with no real data on it.
+    }
+    
+    function setRecord(layout, field, data){
+        
     }
 
 };
