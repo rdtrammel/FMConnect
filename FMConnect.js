@@ -1,36 +1,35 @@
 // FMConnect.js
-// Version 0.0.1
+// Version 0.0.2
 // Author: Robert D Trammel
 // 10/18/2018
 
-const FMConnect = function (obj){
+class FMConnect(obj){
 
-    options = {
-        token : "", //To be set when openConnection runs
+    settings = {
         host : obj.host,
         file : obj.file,
         auth : btoa(`${obj.user}:${obj.pass}`)
     }
 
-    function open(){
-        let url = `https://${options.host}/fmi/data/vLatest/databases/${options.file}/sessions`;
+    open(){
+        let url = `https://${settings.host}/fmi/data/vLatest/databases/${settings.file}/sessions`;
         let headers = {
             method : 'POST',
             headers:{
               'Content-Type': 'application/json',
-              'Authorization':`Basic ${options.auth}`
+              'Authorization':`Basic ${settings.auth}`
             },
             body:{}
         };
         fetch(url, headers).then( result =>{ 
             if ( !result.OK ) return;
-            options.token = result.json().response.token;
+            settings.token = result.json().response.token;
         }); //Fetch not working yet
     }
 
-    function close(){
-        if (!options.token) {console.log('Err - No token found.' ); return;}
-        let url = `https://${options.host}/fmi/data/vLatest/databases/${options.file}/sessions/${options.token}`;
+    close(){
+        if (!settings.token) {console.log('Err - No token found.' ); return;}
+        let url = `https://${settings.host}/fmi/data/vLatest/databases/${settings.file}/sessions/${settings.token}`;
         let headers = {
             method: "DELETE",
             headers:{
@@ -40,16 +39,16 @@ const FMConnect = function (obj){
         fetch(url, headers).then(result=>console.log(result)); //Not working
     }
 
-    function find(layout,criteria){
-        for (var i = 0 ; !options.token && i < 3 ; i++){ open();} //Try 3 times
+    find(layout,criteria){
+        for (var i = 0 ; !settings.token && i < 3 ; i++){ open();} //Try 3 times - Obviously this is not the way to do it
         if (!options.token) return;
     }
     
-    function runScript(scriptName){
+    runScript(scriptName){
         //This will require a generic "Globals" layout exists somewhere with no real data on it.
     }
     
-    function setRecord(layout, field, data){
+    setField(layout, field, data){
         
     }
 
